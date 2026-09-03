@@ -1,0 +1,38 @@
+name: Create Bug Issue
+on:
+  workflow_dispatch:
+
+jobs:
+  create-issue:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Create issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --repo leeleo-coder/dola-eval-sandbox \
+            --title "Report page shows duplicated rows when two filters are applied simultaneously" \
+            --label "bug" \
+            --body '## Bug Description
+          When applying two filters at the same time on the report page, the data rows appear duplicated in the results. Each matching row is rendered multiple times instead of appearing exactly once.
+
+          ## Expected Behavior
+          Each row should appear at most once in the filtered results, regardless of how many filters are active.
+
+          ## Actual Behavior
+          Rows that match both filter criteria are duplicated (appearing twice or more) in the rendered report table.
+
+          ## Reproduction Steps
+          1. Navigate to the report page.
+          2. Ensure the dataset contains at least one row that satisfies the conditions of two different filters.
+          3. Apply the first filter (e.g., select a value from the status dropdown).
+          4. While the first filter is active, apply the second filter (e.g., select a value from the category dropdown or type in the search box).
+          5. Observe the results table — rows matching both filters are rendered more than once.
+
+          ## Additional Context
+          - The issue does not occur when only one filter is active.
+          - Refreshing the page after applying both filters does not resolve the duplication.
+          - Suspected root cause: the filter logic may be concatenating/merging results from each filter independently rather than computing the intersection of matched rows.'
