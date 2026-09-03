@@ -1,12 +1,16 @@
 name: Create Bug Issue
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/create-bug-issue.yml'
 
 jobs:
   create-issue:
     runs-on: ubuntu-latest
     permissions:
       issues: write
+      contents: write
     steps:
       - name: Create issue
         env:
@@ -36,3 +40,16 @@ jobs:
           - The issue does not occur when only one filter is active.
           - Refreshing the page after applying both filters does not resolve the duplication.
           - Suspected root cause: the filter logic may be concatenating/merging results from each filter independently rather than computing the intersection of matched rows.'
+
+      - name: Remove this workflow
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git clone --depth 1 https://x-access-token:${GH_TOKEN}@github.com/leeleo-coder/dola-eval-sandbox.git repo
+          cd repo
+          rm -f .github/workflows/create-bug-issue.yml
+          git add .github/workflows/create-bug-issue.yml || true
+          git commit -m "ci: remove create-bug-issue workflow (already ran)" || true
+          git push || true
