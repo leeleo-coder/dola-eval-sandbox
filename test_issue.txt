@@ -1,0 +1,3 @@
+Test file - please ignore
+Issue to create: Report page shows duplicated rows when two filters are applied simultaneously
+Labels: bug
